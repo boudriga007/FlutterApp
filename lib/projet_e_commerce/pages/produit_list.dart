@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:projet/projet_e_commerce/data/list_produits.dart';
+import 'package:projet/projet_e_commerce/myWidgets/un_produit.dart';
+import 'package:projet/projet_e_commerce/pages/produit_detail.dart';
 
 class ProduitListPage extends StatefulWidget {
   const ProduitListPage({super.key});
@@ -16,7 +19,19 @@ class _MyWidgetState extends State<ProduitListPage> {
         centerTitle: true,
         backgroundColor: Colors.blue,
       ),
-      body: Text("To DO....."),
+      body: GridView.count(
+        crossAxisCount: 2,
+        childAspectRatio: 0.4,
+        children: List.generate(AllProductData.Produits.length, (index) {
+          return InkWell(
+            onTap: () {
+              //Implémenter la navigation pour charger la page Detail produits
+               ProduitDetailPage(produit:AllProductData.Produits[index]);
+            },
+            child: WidgetProduit(p: AllProductData.Produits[index]),
+          );
+        }),
+      ),
     );
   }
 }
