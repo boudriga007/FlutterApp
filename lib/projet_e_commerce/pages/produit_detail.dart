@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:projet/projet_e_commerce/data/list_produits.dart';
 import 'package:projet/projet_e_commerce/model/class_produit.dart';
 
+/**
+ * Passage INDEX , PRODUIT selectionné
+ *   => Constructeur
+ *   => Navugator  +  arguments :index ou produit
+ */
 class ProduitDetailPage extends StatefulWidget {
-  Produit produit = Produit(
-    id: "",
-    description: "",
-    title: "",
-    price: 0,
-    quantity: 0,
-    brand: "",
-    imageUrl: "",
-    produitCategoryName: "",
-  );
-  ProduitDetailPage({super.key, required this.produit});
+  // Produit produit = Produit(
+  //   id: "",
+  //   description: "",
+  //   title: "",
+  //   price: 0,
+  //   quantity: 0,
+  //   brand: "",
+  //   imageUrl: "",
+  //   produitCategoryName: "",
+  // );
+  ProduitDetailPage({super.key});
 
   @override
   State<ProduitDetailPage> createState() => _MyWidgetState();
@@ -21,15 +27,29 @@ class ProduitDetailPage extends StatefulWidget {
 class _MyWidgetState extends State<ProduitDetailPage> {
   @override
   Widget build(BuildContext context) {
+    //recupération de l'index du produit selectionné  à partir de
+    // ARGUMENTS , du systeme de navigation
+
+    final dynamic args = ModalRoute.of(context)!.settings.arguments;
+
+    int indexProduit;
+
+    if (args == null || args.toString().isEmpty) {
+      indexProduit = 0;
+    } else {
+      // Use int.tryParse to avoid crashes if the string isn't a valid number
+      indexProduit = int.tryParse(args.toString()) ?? 0;
+    }
+    final produit = AllProductData.Produits[indexProduit];
     return Scaffold(
-      appBar: AppBar(title: Text(widget.produit.title)),
+      appBar: AppBar(title: Text(produit.title)),
       body: Stack(
         children: [
           Container(
             foregroundDecoration: BoxDecoration(color: Colors.black12),
             height: MediaQuery.of(context).size.height * 0.45,
             width: double.infinity,
-            child: Image.network(widget.produit.imageUrl),
+            child: Image.network(produit.imageUrl),
           ),
 
           SingleChildScrollView(
@@ -47,12 +67,12 @@ class _MyWidgetState extends State<ProduitDetailPage> {
                         child: Text(
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          widget.produit.description,
+                          produit.description,
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
                       Text(
-                        "Prix:" + widget.produit.price.toString(),
+                        "Prix:" + produit.price.toString(),
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.blue,
@@ -67,15 +87,9 @@ class _MyWidgetState extends State<ProduitDetailPage> {
                         ),
                       ),
                       const Divider(),
-                      infoProduct("Brand", widget.produit.brand),
-                      infoProduct(
-                        "Quantity",
-                        widget.produit.quantity.toString(),
-                      ),
-                      infoProduct(
-                        "Category",
-                        widget.produit.produitCategoryName,
-                      ),
+                      infoProduct("Brand", produit.brand),
+                      infoProduct("Quantity", produit.quantity.toString()),
+                      infoProduct("Category", produit.produitCategoryName),
                     ],
                   ),
                 ),

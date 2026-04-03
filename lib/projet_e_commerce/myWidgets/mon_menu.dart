@@ -10,6 +10,55 @@ class MonMenu extends StatefulWidget {
 class _MyWidgetState extends State<MonMenu> {
   @override
   Widget build(BuildContext context) {
-    return Drawer();
+    return Drawer(
+      child: ListView(
+        children: [
+          UserAccountsDrawerHeader(
+            accountName: Text("Ben Jazia"),
+            accountEmail: Text("monemail@gmail.com"),
+            currentAccountPicture: CircleAvatar(
+              backgroundImage: NetworkImage(
+                "https://st2.depositphotos.com/1006318/5909/v/450/depositphotos_59094701-stock-illustration-businessman-profile-icon.jpg",
+              ),
+            ),
+          ),
+          ListTile(
+            leading: Icon(Icons.home),
+            title: Text("Acceuil"),
+            onTap: () {
+              Navigator.pushNamed(context, 'home');
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.list),
+            title: Text("Liste Produit"),
+            onTap: () {
+              Navigator.pushNamed(context, 'listProduit');
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.shopping_cart),
+            title: Text("Mon Panier"),
+            onTap: () {
+              Navigator.pushNamed(context, 'panier');
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.favorite),
+            title: Text("Favori"),
+            onTap: () {
+              Navigator.pushNamed(context, 'favorite');
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.person),
+            title: Text("Profil"),
+            onTap: () {
+              Navigator.pushNamed(context, 'profile');
+            },
+          ),
+        ],
+      ),
+    );
   }
 }

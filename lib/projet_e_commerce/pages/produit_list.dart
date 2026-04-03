@@ -26,7 +26,8 @@ class _MyWidgetState extends State<ProduitListPage> {
           return InkWell(
             onTap: () {
               //Implémenter la navigation pour charger la page Detail produits
-               ProduitDetailPage(produit:AllProductData.Produits[index]);
+              Navigator.pushNamed(context,'detailProduit',arguments: index);
+              // ProduitDetailPage(produit: AllProductData.Produits[index]);
             },
             child: WidgetProduit(p: AllProductData.Produits[index]),
           );
