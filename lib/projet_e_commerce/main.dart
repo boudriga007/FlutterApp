@@ -6,9 +6,16 @@ import 'package:projet/projet_e_commerce/pages/page_user.dart';
 import 'package:projet/projet_e_commerce/pages/panier.dart';
 import 'package:projet/projet_e_commerce/pages/produit_detail.dart';
 import 'package:projet/projet_e_commerce/pages/produit_list.dart';
+import 'package:projet/projet_e_commerce/provider/cart_provider.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(EcommerceApp());
+  runApp(
+    MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_) => PanierProvider())],
+      child: EcommerceApp(),
+    ),
+  );
 }
 
 class EcommerceApp extends StatelessWidget {
@@ -21,7 +28,7 @@ class EcommerceApp extends StatelessWidget {
         'home': (context) => HomePage(),
         'listProduit': (context) => ProduitListPage(),
         'detailProduit': (context) => ProduitDetailPage(),
-        'panier': (context) => PanierPage(),
+        'panier': (context) => PanierScreen(),
         'favorite': (context) => FavoriPage(),
         'profile': (context) => UserInfoPage(),
         'barreNavigation': (context) => BarreNavigationScreen(),

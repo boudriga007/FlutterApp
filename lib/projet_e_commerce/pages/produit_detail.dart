@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:projet/projet_e_commerce/data/list_produits.dart';
 import 'package:projet/projet_e_commerce/model/class_produit.dart';
+import 'package:projet/projet_e_commerce/model/class_produit_panier.dart';
+import 'package:projet/projet_e_commerce/provider/cart_provider.dart';
+import 'package:provider/provider.dart';
 
 /**
  * Passage INDEX , PRODUIT selectionné
@@ -29,6 +32,8 @@ class _MyWidgetState extends State<ProduitDetailPage> {
   Widget build(BuildContext context) {
     //recupération de l'index du produit selectionné  à partir de
     // ARGUMENTS , du systeme de navigation
+
+    final monpanier = Provider.of<PanierProvider>(context);
 
     final dynamic args = ModalRoute.of(context)!.settings.arguments;
 
@@ -100,7 +105,18 @@ class _MyWidgetState extends State<ProduitDetailPage> {
                     Expanded(
                       flex: 2,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          monpanier.ajouterProduit(
+                            ProduitPanier(
+                              id: produit.id,
+                              title: produit.title,
+                              description: produit.description,
+                              price: produit.price,
+                              imageUrl: produit.imageUrl,
+                              quantite: 1,
+                            ),
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.pink,
                           foregroundColor: Colors.white,
