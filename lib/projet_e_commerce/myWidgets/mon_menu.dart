@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class MonMenu extends StatefulWidget {
   const MonMenu({super.key});
@@ -57,8 +60,26 @@ class _MyWidgetState extends State<MonMenu> {
               Navigator.pushNamed(context, 'profile');
             },
           ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.exit_to_app_sharp),
+            title: Text("Quitter"),
+            onTap: () {
+              // Test Android : <20 : > 20
+              //web :
+              //ios :
+              //SystemNavigator.pop();
+              exit(0);
+            },
+          ),
         ],
       ),
     );
   }
 }
+//
+/*Future<void> getApi() async{
+  await // appel
+  // recupération de la réponse
+  // utilsiation des data
+}*/

@@ -1,12 +1,14 @@
+import 'dart:convert';
+
 class ProduitPanier {
   
   String id = "";
   String title = "";
   String description = "";
-  double price = 0;//unitaire
+  double price = 0;
   String imageUrl = "";
-  int quantite = 0;// dans le panier
-  
+  int quantite = 0;
+
   ProduitPanier({
     required this.id,
     required this.title,
@@ -16,8 +18,78 @@ class ProduitPanier {
     required this.quantite,
   });
 
+
+  ProduitPanier copyWith({
+    String? id,
+    String? title,
+    String? description,
+    double? price,
+    String? imageUrl,
+    int? quantite,
+  }) {
+    return ProduitPanier(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      price: price ?? this.price,
+      imageUrl: imageUrl ?? this.imageUrl,
+      quantite: quantite ?? this.quantite,
+    );
+  }
+// Objet => MAP
+  Map<String, dynamic> toMap() {
+    final result = <String, dynamic>{};
+  
+    result.addAll({'id': id});
+    result.addAll({'title': title});
+    result.addAll({'description': description});
+    result.addAll({'price': price});
+    result.addAll({'imageUrl': imageUrl});
+    result.addAll({'quantite': quantite});
+  
+    return result;
+  }
+  //MAP => OBjet
+  factory ProduitPanier.fromMap(Map<String, dynamic> map) {
+    return ProduitPanier(
+      id: map['id'] ?? '',
+      title: map['title'] ?? '',
+      description: map['description'] ?? '',
+      price: map['price']?.toDouble() ?? 0.0,
+      imageUrl: map['imageUrl'] ?? '',
+      quantite: map['quantite']?.toInt() ?? 0,
+    );
+  }
+  //Objet => MAP => JSON
+  String toJson() => json.encode(toMap());
+  //String JSON => OBJET
+  factory ProduitPanier.fromJson(String source) => ProduitPanier.fromMap(json.decode(source));
+
   @override
   String toString() {
-    return 'ProduitPanier(id: $id, title: $title,    price: $price, imageUrl: $imageUrl, quantite: $quantite)';
+    return 'ProduitPanier(id: $id, title: $title, description: $description, price: $price, imageUrl: $imageUrl, quantite: $quantite)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+  
+    return other is ProduitPanier &&
+      other.id == id &&
+      other.title == title &&
+      other.description == description &&
+      other.price == price &&
+      other.imageUrl == imageUrl &&
+      other.quantite == quantite;
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^
+      title.hashCode ^
+      description.hashCode ^
+      price.hashCode ^
+      imageUrl.hashCode ^
+      quantite.hashCode;
   }
 }

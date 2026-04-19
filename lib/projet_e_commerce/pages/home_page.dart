@@ -19,12 +19,15 @@ class _MyWidgetState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     List<ProduitPanier> panier = Provider.of<PanierProvider>(context).Panier;
-    print(
-      "page acceul" +
-          panier[0].title.toString() +
-          " Qiunatité: " +
-          panier[0].quantite.toString(),
-    );
+
+    if (panier.length > 0) {
+      print(
+        "page acceul" +
+            panier[0].title.toString() +
+            " Qiunatité: " +
+            panier[0].quantite.toString(),
+      );
+    }
     return Scaffold(
       drawer: MonMenu(),
       appBar: AppBar(
