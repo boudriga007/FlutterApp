@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:projet/projet_e_commerce/model/class_produit_panier.dart';
 import 'package:projet/projet_e_commerce/myWidgets/cart_empty.dart';
@@ -14,18 +15,30 @@ class PanierScreen extends StatelessWidget {
       context,
     ).Panier;
 
-    print("xxxTAILLE PANIER=????"); //nombre produit
+    print("TAILLE PANIER: ${contenuPanier.length}");
 
     return contenuPanier.isEmpty
-        ? Scaffold(body: CartEmpty())
+        ? const Scaffold(body: CartEmpty())
         : Scaffold(
-            //bottomSheet: chekcoutsection(cartProvider.totalAmount),
             appBar: AppBar(
               title: Text(
-                "Nombre Produit: " + contenuPanier.length.toString(), //4
+                "Nombre Produit: " + contenuPanier.length.toString(),
               ),
               actions: [
-                IconButton(onPressed: () {}, icon: const Icon(Icons.remove)),
+                IconButton(
+                  onPressed: () {
+                    // Vider le panier
+                    final panierProvider = Provider.of<PanierProvider>(
+                      context,
+                      listen: false,
+                    );
+                    panierProvider.viderPanier();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Panier vidé")),
+                    );
+                  },
+                  icon: const Icon(Icons.delete_sweep),
+                ),
               ],
             ),
             body: Padding(
@@ -40,47 +53,5 @@ class PanierScreen extends StatelessWidget {
               ),
             ),
           );
-
-    //CartEmpty(),
-  }
-
-  Widget chekcoutsection(double total) {
-    return Container(
-      decoration: const BoxDecoration(
-        border: Border(top: BorderSide(color: Colors.grey, width: 0.5)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            ElevatedButton(
-              onPressed: () {},
-              style: ButtonStyle(
-                backgroundColor: const WidgetStatePropertyAll(Colors.red),
-                shape: WidgetStatePropertyAll(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
-                  ),
-                ),
-              ),
-              child: const Text(
-                "Checkout",
-                style: TextStyle(color: Colors.black),
-              ),
-            ),
-            const SizedBox(width: 20),
-            const Text("Total", style: TextStyle(color: Colors.black)),
-            Text(
-              total.toString(),
-              style: const TextStyle(
-                color: Colors.blueAccent,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

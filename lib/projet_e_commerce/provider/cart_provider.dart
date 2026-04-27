@@ -1,81 +1,79 @@
-import 'dart:convert';
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:projet/projet_e_commerce/model/class_produit.dart';
 import 'package:projet/projet_e_commerce/model/class_produit_panier.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PanierProvider with ChangeNotifier {
-  //attribut Private panier
   List<ProduitPanier> _panier = [];
-  PanierProvider(){
+  
+  PanierProvider() {
     getCart();
   }
-  //GETTER => GET
+  
   List<ProduitPanier> get Panier {
     return _panier;
   }
-  //SETTER => on ne doit pas les ajouer
-  //---------- Methode Ajouter Produit
-
+  
   void ajouterProduit(ProduitPanier produitAjouter) {
-    ProduitPanier? produitTrouve = _panier.firstWhere(
-      (art) {
-        if (art.id == produitAjouter.id) {
-          art.quantite += 1;
-          return true;
-        }
-        return false;
-      },
-      orElse: () {
-        print("Ajout nouveau  produit :" + produitAjouter.title);
-
-        final p = ProduitPanier(
-          id: produitAjouter.id,
-          title: produitAjouter.title,
-          description: produitAjouter.description,
-          price: produitAjouter.price,
-          imageUrl: produitAjouter.imageUrl,
-          quantite: 1,
-        );
-        _panier.add(p);
-
-        return p;
-      },
-    );
-    notifyListeners();
-  }
-
-  // Gestion de la persistance de données
-  //sauvegarder le cointenu du panier
-  Future<void> saveCart() async {
-    final SharedPreferences data = await SharedPreferences.getInstance();
-    final List<String> panierjson = _panier
-        .map((item) => item.toJson())
-        .toList();
-    await data.setString("savedCart", json.encode(panierjson).toString());
-    print("Sauvagarde Panier: ${_panier.length} Produits");
-    //data =>
-    //setString
-    //setListString
-    // _panier => List de Produit Panier
-    //format String
-    // _panier => JSON => String
-    // => JSON => String FORMATE
-  }
-
-  //Charger le contenu du panier
-  Future<void> getCart() async {
-    final SharedPreferences data = await SharedPreferences.getInstance();
-    final String? x = await data.getString("savedCart");
-    if (x == null) {
-      _panier = [];
+    int indexExistant = _panier.indexWhere((art) => art.id == produitAjouter.id);
+    
+    if (indexExistant != -1) {
+      _panier[indexExistant].quantite += 1;
     } else {
-      final List<dynamic> panierjson = json.decode(x);
-
-      _panier = panierjson.map((item) => ProduitPanier.fromJson(item)).toList();
+      _panier.add(produitAjouter);
     }
-    print("Recupération des produits sauvegardés: ${_panier.length} Produits");
+    
+    notifyListeners();
+    saveCart(); // Sauvegarde immédiate
+  }
+  
+  void supprimerProduit(ProduitPanier produit) {
+    _panier.removeWhere((item) => item.id == produit.id);
+    notifyListeners();
+    saveCart();
+  }
+  
+  void modifierQuantite(String produitId, int nouvelleQuantite) {
+    int index = _panier.indexWhere((item) => item.id == produitId);
+    if (index != -1) {
+      if (nouvelleQuantite <= 0) {
+        _panier.removeAt(index);
+      } else {
+        _panier[index].quantite = nouvelleQuantite;
+      }
+      notifyListeners();
+      saveCart();
+    }
+  }
+  
+  void viderPanier() {
+    _panier.clear();
+    notifyListeners();
+    saveCart();
+  }
+  
+  // Sauvegarde dans SharedPreferences
+  Future<void> saveCart() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final List<String> panierJson = _panier.map((item) => item.toJson()).toList();
+    await prefs.setString('cart_data', json.encode(panierJson));
+    print("Panier sauvegardé: ${_panier.length} produits");
+  }
+  
+  // Chargement depuis SharedPreferences
+  Future<void> getCart() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? cartString = prefs.getString('cart_data');
+    
+    if (cartString != null && cartString.isNotEmpty) {
+      final List<dynamic> cartJson = json.decode(cartString);
+      _panier = cartJson.map((item) => ProduitPanier.fromJson(item)).toList();
+      print("Panier chargé: ${_panier.length} produits");
+    } else {
+      _panier = [];
+      print("Panier: vide");
+    }
     notifyListeners();
   }
 }
